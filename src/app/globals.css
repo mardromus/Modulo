@@ -1,26 +1,933 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════
+   Modulo - Design System
+  Theme: Dark Glass (Default)
+   Deep blacks · Neon accents · Glassmorphism · Alive
+   ═══════════════════════════════════════════════════ */
+
 :root {
+  /* LIGHT MODE (Default) - Strict White/Black */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
+
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-border: #e0e0e0;
+  --card-border-hover: #000000;
+
+  --header-bg: rgba(255, 255, 255, 0.85);
+
+  --primary: #000000;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f0f0f0;
+  --secondary-foreground: #000000;
+
+  --accent: #000000;
+  --accent-light: #333333;
+  /* Adjusted for light mode */
+  --accent-glow: rgba(0, 0, 0, 0.1);
+  --gradient-accent: linear-gradient(135deg, #000000 0%, #333333 100%);
+  /* New gradient */
+
+  --text-primary: #000000;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+
+  --success: #10b981;
+  --success-glow: rgba(16, 185, 129, 0.12);
+  /* Added for consistency */
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --error-glow: rgba(239, 68, 68, 0.12);
+  /* Added for consistency */
+
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --gradient-card: linear-gradient(145deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0.005) 100%);
+  /* Adjusted for light mode */
+  --shadow-glow: 0 0 30px rgba(0, 0, 0, 0.08);
+  /* Adjusted for light mode */
+
+  --grid-color: rgba(0, 0, 0, 0.05);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* Dark Mode - Manual Toggle */
+/* @media (prefers-color-scheme: dark) { -- removed to force default light */
+.dark {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* DARK MODE - Neutral Blackish */
+    --background: #08080c;
+    --foreground: #ffffff;
+
+    --card-bg: rgba(20, 20, 20, 0.4);
+    --card-border: rgba(255, 255, 255, 0.08);
+    /* More subtle border */
+    --card-border-hover: rgba(255, 255, 255, 0.2);
+
+    --header-bg: rgba(8, 8, 12, 0.85);
+
+    --primary: #ffffff;
+    --primary-foreground: #000000;
+
+    --secondary: #1a1a20;
+    /* Slightly lighter than bg */
+    --secondary-foreground: #ffffff;
+
+    --accent: #ffffff;
+    --accent-light: #e5e5e5;
+    --accent-glow: rgba(255, 255, 255, 0.08);
+    --gradient-accent: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+
+    --text-primary: #f2f2f2;
+    --text-secondary: #a1a1aa;
+    --text-muted: #71717a;
+
+    --success: #34d399;
+    /* Keeping semantic colors but desaturated if needed, users usually like semantic colors to remain colored for meaning */
+    --success-glow: rgba(52, 211, 153, 0.1);
+    --warning: #fbbf24;
+    --error: #f87171;
+    --error-glow: rgba(248, 113, 113, 0.1);
+
+    --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.0) 100%);
+    --shadow-glow: 0 0 40px rgba(255, 255, 255, 0.03);
+
+    --grid-color: rgba(255, 255, 255, 0.03);
   }
 }
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
 body {
+  font-family: var(--font);
   background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--primary-foreground);
+  /* Changed to use primary-foreground */
+}
+
+/* ─── Layout ─────────────────────────────────────── */
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.page {
+  min-height: 100vh;
+  padding-top: 72px;
+}
+
+/* ─── Animated Background ────────────────────────── */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-bg .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  will-change: transform;
+}
+
+.hero-bg .orb:nth-child(1) {
+  width: 500px;
+  height: 500px;
+  background: var(--accent);
+  /* Changed to use accent */
+  top: -120px;
+  left: -150px;
+  animation: drift1 18s ease-in-out infinite;
+}
+
+.hero-bg .orb:nth-child(2) {
+  width: 400px;
+  height: 400px;
+  background: var(--accent-light);
+  /* Changed to use accent-light */
+  top: 100px;
+  right: -80px;
+  animation: drift2 22s ease-in-out infinite;
+}
+
+.hero-bg .orb:nth-child(3) {
+  width: 350px;
+  height: 350px;
+  background: var(--text-secondary);
+  /* Changed to use text-secondary */
+  bottom: 40px;
+  left: 25%;
+  animation: drift3 20s ease-in-out infinite;
+}
+
+.hero-bg .orb:nth-child(4) {
+  width: 250px;
+  height: 250px;
+  background: var(--accent);
+  /* Changed to use accent */
+  top: 45%;
+  right: 15%;
+  animation: drift1 25s ease-in-out infinite reverse;
+}
+
+.hero-bg .orb:nth-child(5) {
+  width: 450px;
+  height: 450px;
+  background: var(--accent-light);
+  /* Changed to use accent-light */
+  top: 35%;
+  left: 8%;
+  animation: drift2 28s ease-in-out infinite reverse;
+}
+
+.hero-bg .orb:nth-child(6) {
+  width: 300px;
+  height: 300px;
+  background: var(--text-secondary);
+  /* Changed to use text-secondary */
+  bottom: -60px;
+  right: 8%;
+  animation: drift3 16s ease-in-out infinite;
+}
+
+@keyframes drift1 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  25% {
+    transform: translate(60px, 40px) scale(1.05);
+  }
+
+  50% {
+    transform: translate(-30px, 80px) scale(0.95);
+  }
+
+  75% {
+    transform: translate(40px, -20px) scale(1.02);
+  }
+}
+
+@keyframes drift2 {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate(-50px, 50px) scale(1.08);
+  }
+
+  66% {
+    transform: translate(40px, -30px) scale(0.96);
+  }
+}
+
+@keyframes drift3 {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(70px, -60px) scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg .orb {
+    animation: none !important;
+  }
+}
+
+/* ─── Header ─────────────────────────────────────── */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: var(--header-bg);
+  /* Kept for dark mode specific header background */
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--card-border);
+  /* Changed to use card-border */
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+
+.header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-logo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  background: var(--gradient-accent);
+  /* Changed to use gradient-accent */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.header-nav a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.header-nav a:hover,
+.header-nav a.active {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.header-connect {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-wallet {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  /* Changed to use card-border */
+  border-radius: 100px;
+  padding: 4px 14px 4px 8px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.header-wallet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  /* Changed to use success */
+  box-shadow: 0 0 8px var(--success);
+  /* Changed to use success */
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    box-shadow: 0 0 4px var(--success);
+    /* Changed to use success */
+  }
+
+  50% {
+    box-shadow: 0 0 12px var(--success);
+    /* Changed to use success */
+  }
+}
+
+/* ─── Cards ──────────────────────────────────────── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  border-color: var(--card-border-hover);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--card-border-hover);
+  transform: translateY(-2px);
+}
+
+/* ─── Buttons ────────────────────────────────────── */
+.btn-primary {
+  background: var(--foreground);
+  color: var(--background);
+  border: 1px solid var(--foreground);
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: -0.01em;
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary:not(:disabled):hover {
+  background: transparent;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 24px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+/* ─── Badges ─────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-success {
+  background: var(--success-glow);
+  /* Changed to use success-glow */
+  color: var(--success);
+  /* Changed to use success */
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.badge-warning {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--warning);
+  /* Changed to use warning */
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.badge-error,
+.badge-failed {
+  background: var(--error-glow);
+  /* Changed to use error-glow */
+  color: var(--error);
+  /* Changed to use error */
+  border: 1px solid rgba(248, 113, 113, 0.2);
+}
+
+.badge-pending {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--card-border);
+  /* Changed to use card-border */
+}
+
+.badge-accent {
+  background: var(--accent-glow);
+  color: var(--accent-light);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  /* Kept original for now, could be adjusted to accent-glow */
+}
+
+/* ─── Inputs ─────────────────────────────────────── */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.4);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+/* ─── Stats ──────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  text-align: center;
+}
+
+/* ─── Stat Value ─────────────────────────────────── */
+.stat-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ─── Tables ─────────────────────────────────────── */
+.table-container {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  /* Changed to use card-border */
+  background: var(--gradient-card);
+  backdrop-filter: blur(12px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--card-border);
+  /* Changed to use card-border */
+}
+
+td {
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ─── Split Bar ──────────────────────────────────── */
+.split-bar {
+  display: flex;
+  border-radius: 6px;
+  overflow: hidden;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.split-segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.split-segment:nth-child(1) {
+  background: var(--accent);
+}
+
+.split-segment:nth-child(2) {
+  background: var(--accent-light);
+  /* Changed to use accent-light */
+}
+
+.split-segment:nth-child(3) {
+  background: var(--text-secondary);
+  /* Changed to use text-secondary */
+}
+
+.split-segment:nth-child(4) {
+  background: var(--text-muted);
+}
+
+/* ─── Agent Grid ─────────────────────────────────── */
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.agent-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.agent-indicator.active {
+  background: var(--success);
+  /* Changed to use success */
+  box-shadow: 0 0 8px var(--success);
+  /* Changed to use success */
+  animation: pulse-dot 2.5s ease-in-out infinite;
+}
+
+.agent-indicator.inactive {
+  background: var(--text-muted);
+}
+
+/* ─── Checkout ───────────────────────────────────── */
+.checkout-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.checkout-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--card-border);
+  /* Changed to use card-border */
+}
+
+.checkout-total {
+  font-size: 2rem;
+  font-weight: 800;
+  background: var(--gradient-accent);
+  /* Changed to use gradient-accent */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Explorer Link ──────────────────────────────── */
+.explorer-link {
+  color: var(--accent-light);
+  text-decoration: none;
+  font-family: monospace;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  border-bottom: 1px dashed rgba(99, 102, 241, 0.3);
+  /* Kept original for now, could be adjusted */
+}
+
+.explorer-link:hover {
+  color: var(--text-primary);
+  /* Changed to use text-primary */
+  border-bottom-color: var(--text-primary);
+  /* Changed to use text-primary */
+}
+
+/* ─── Spinner ────────────────────────────────────── */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Loading Bar ────────────────────────────────── */
+.loading-bar {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 40%;
+  border-radius: 2px;
+  background: var(--gradient-accent);
+  /* Changed to use gradient-accent */
+  animation: loading-slide 1.4s ease-in-out infinite;
+}
+
+@keyframes loading-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+/* ─── QR Code Container ─────────────────────────── */
+.qr-container {
+  display: inline-flex;
+  padding: 20px;
+  background: var(--foreground);
+  /* Changed to use foreground */
+  border-radius: var(--radius);
+  box-shadow: 0 0 40px var(--accent-glow), 0 0 80px var(--accent-glow);
+  /* Changed to use accent-glow */
+}
+
+.qr-wrapper {
+  text-align: center;
+}
+
+.qr-wrapper p {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-top: 12px;
+}
+
+/* ─── Glow Effects ───────────────────────────────── */
+.glow-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: var(--gradient-accent);
+  /* Changed to use gradient-accent */
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.glow-card:hover::before {
+  opacity: 0.12;
+}
+
+/* ─── Ticker / Live Feed ─────────────────────────── */
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--error);
+  /* Changed to use error */
+  display: inline-block;
+  animation: pulse-live 1.5s ease-in-out infinite;
+  margin-right: 6px;
+}
+
+@keyframes pulse-live {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ─── Gradient Text ──────────────────────────────── */
+.gradient-text {
+  background: var(--gradient-accent);
+  /* Changed to use gradient-accent */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Number Animations ──────────────────────────── */
+.count-up {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Feature Card Accents ───────────────────────── */
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .agent-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-nav a {
+    display: none;
+  }
+}
+
+/* ─── Scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ─── Textarea for dark mode ─────────────────────── */
+textarea {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: var(--border) !important;
+  color: var(--text-primary) !important;
+}
+
+textarea:focus {
+  border-color: var(--accent) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* ─── Code elements ──────────────────────────────── */
+code {
+  color: var(--accent-light);
+  font-size: 0.82em;
 }
